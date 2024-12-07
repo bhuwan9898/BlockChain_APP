@@ -1,23 +1,42 @@
 import logo from "./logo.svg";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-
-const numTickets = 100;
-const etherPrice = 0.0001;
-
+import web3 from "./web3";
+import ticketSale from "./ticketSale";
+import { buyTicket, offerSwap, acceptSwap, getTicketNumber } from "./utils/functions";
 function App() {
   // state variables for all the four input fields
+  const [numTickets, setNumTickets] = useState("");
+  const [ticketPrice, setTicketPrice] = useState("");
   const [buyTicketInputValue, setBuyTicketInputValue] = useState("");
   const [getTicketIdInputValue, setGetTicketIdInputValue] = useState("");
   const [offerSwapInputValue, setOfferSwapInputValue] = useState("");
   const [acceptSwapInputValue, setAcceptSwapInputValue] = useState("");
+  // const blockChainData = async () => {
+  //   const accounts = await web3.eth.getAccounts();
+  // };
+  // blockChainData();
 
+  useEffect(() => {
+    const fetchContractData = async () => {
+      try {
+        // Fetch total tickets
+        const tickets = await ticketSale.methods.totalTickets().call();
+        setNumTickets(tickets);
+        // Fetch ticket price (in Wei, convert to Ether)
+        const price = await ticketSale.methods.ticketPrice().call();
+        setTicketPrice(web3.utils.fromWei(price, "ether")); // Convert Wei to Ether
+      } catch (error) {
+        console.error("Error fetching contract data:", error);
+      }
+    };
+    fetchContractData();
+  }, []);
   // Handle form submissions and connect to etherscan respectively
   const handleBuyTicket = (event) => {
     event.preventDefault();
-    console.log("Buy Ticket ID: ", buyTicketInputValue);
+    buyTicket(buyTicketInputValue);
   };
-
   const handleGetTicketId = (event) => {
     event.preventDefault();
     console.log("Wallet Address: ", getTicketIdInputValue);
@@ -37,7 +56,7 @@ function App() {
     <>
       <div className="items-center p-5 flex flex-col">
         <p>There are total {numTickets} tickets.</p>
-        <p>The price of each ether is {etherPrice} ether.</p>
+        <p>The price of each ether is {ticketPrice} ether.</p>
       </div>
       <div className="grid grid-cols-1 gap-4 p-5 lg:grid-cols-4 lg:gap-8">
         <div className="h-32 rounded-lg items-center justify-center ">
