@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import web3 from "./web3";
 import ticketSale from "./ticketSale";
-import { buyTicket, offerSwap, acceptSwap, getTicketNumber } from "./utils/functions";
+import { buyTicket, offerSwap, acceptSwap, getTicketNumber, returnTicket } from "./utils/functions";
 function App() {
   // state variables for all the four input fields
   const [numTickets, setNumTickets] = useState("");
@@ -12,10 +12,7 @@ function App() {
   const [getTicketIdInputValue, setGetTicketIdInputValue] = useState("");
   const [offerSwapInputValue, setOfferSwapInputValue] = useState("");
   const [acceptSwapInputValue, setAcceptSwapInputValue] = useState("");
-  // const blockChainData = async () => {
-  //   const accounts = await web3.eth.getAccounts();
-  // };
-  // blockChainData();
+  const [returnTicketInputValue, setReturnTicketInputValue] = useState("");
 
   useEffect(() => {
     const fetchContractData = async () => {
@@ -39,19 +36,22 @@ function App() {
   };
   const handleGetTicketId = (event) => {
     event.preventDefault();
-    console.log("Wallet Address: ", getTicketIdInputValue);
+    getTicketNumber(getTicketIdInputValue)
   };
 
   const handleOfferSwap = (event) => {
     event.preventDefault();
-    console.log("Offer Swap Ticket ID/Address: ", offerSwapInputValue);
+    offerSwap(offerSwapInputValue);
   };
 
   const handleAcceptSwap = (event) => {
     event.preventDefault();
-    console.log("Accept Swap Ticket ID/Address: ", acceptSwapInputValue);
+    acceptSwap(acceptSwapInputValue);
   };
-
+  const handleReturnTicket = (event) =>{
+    event.preventDefault();
+    returnTicket()
+  }
   return (
     <>
       <div className="items-center p-5 flex flex-col">
@@ -147,6 +147,29 @@ function App() {
                 className="inline-block rounded-lg bg-violet-500 px-5 py-3 text-sm font-medium text-white"
               >
                 Accept Swap
+              </button>
+            </div>
+          </form>
+        </div>
+        <div className="h-32 rounded-lg ">
+          <form
+            className="mx-auto mb-0 mt-8 max-w-md space-y-4"
+            onSubmit={handleReturnTicket}
+          >
+            <div className="relative">
+              <input
+                className="w-full border border-violet-500 rounded-lg p-4 text-md text-slate-500 shadow-md"
+                placeholder="Enter Ticket Id"
+                value={returnTicketInputValue}
+                onChange={(e) => setReturnTicketInputValue(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center justify-center">
+              <button
+                type="submit"
+                className="inline-block rounded-lg bg-violet-500 px-5 py-3 text-sm font-medium text-white"
+              >
+                Return Ticket
               </button>
             </div>
           </form>

@@ -141,4 +141,24 @@ contract TicketSale {
 
         return resaleTickets;
     }
+    function returnTicket() public {
+        uint256 ticketId = ticketOwners[msg.sender];
+        require(ticketId != 0, "You don't own a ticket");
+
+        Ticket storage ticket = tickets[ticketId];
+        require(!ticket.forSale, "Ticket already marked for resale");
+
+        uint256 serviceFee = (ticketPrice * 10) / 100; // 10% service fee
+        uint256 refundAmount = ticketPrice - serviceFee;
+
+  
+        ticket.owner = address(0);
+        ticket.forSale = false;
+        ticket.price = 0;
+        delete ticketOwners[msg.sender];
+
+        
+        payable(msg.sender).transfer(refundAmount);
+        payable(manager).transfer(serviceFee);
+    }
 }

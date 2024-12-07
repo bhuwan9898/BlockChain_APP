@@ -66,6 +66,13 @@ const abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "returnTicket",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       { internalType: "address", name: "", type: "address" },
       { internalType: "address", name: "", type: "address" },

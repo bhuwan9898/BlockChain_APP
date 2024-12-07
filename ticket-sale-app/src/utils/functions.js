@@ -54,4 +54,18 @@ const getTicketNumber = async (address) => {
     alert("Error fetching ticket number: " + error.message);
   }
 };
-export { buyTicket, offerSwap, acceptSwap, getTicketNumber };
+const returnTicket = async () => {
+  try {
+    const accounts = await web3.eth.getAccounts();
+
+    await ticketSale.methods.returnTicket().send({
+      from: accounts[0],
+    });
+
+    alert("Ticket returned successfully! Refund processed.");
+  } catch (error) {
+    console.error("Failed to return ticket:", error);
+    alert("Failed to return ticket: " + error.message);
+  }
+};
+export { buyTicket, offerSwap, acceptSwap, getTicketNumber, returnTicket };
